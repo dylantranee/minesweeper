@@ -5,7 +5,7 @@ import java.util.Random;
 import javax.swing.*;
 
 public class Minesweeper {
-    private class MineTile extends JButton {
+    private static class MineTile extends JButton {
         int r;
         int c;
 
@@ -26,8 +26,10 @@ public class Minesweeper {
     JPanel textPanel = new JPanel();
     JPanel boardPanel = new JPanel();
 
+    int mineCount = 10;
     MineTile[][] board = new MineTile[numRows][numCols];
     ArrayList<MineTile> mineList;
+    Random random = new Random();
 
     int tilesClicked = 0;
     boolean gameOver = false;
@@ -70,7 +72,7 @@ public class Minesweeper {
 
                         // Left click
                         if (e.getButton() == MouseEvent.BUTTON1) {
-                            if (tile.getText() == "") {
+                            if (tile.getText().isEmpty()) {
                                 if (mineList.contains(tile)) {
                                     revealMines();
                                 }
@@ -81,10 +83,10 @@ public class Minesweeper {
                         }
                         // Right click
                         else if (e.getButton() == MouseEvent.BUTTON3) {
-                            if (tile.getText() == "" && tile.isEnabled()) {
+                            if (tile.getText().isEmpty() && tile.isEnabled()) {
                                 tile.setText("\uD83D\uDEA9"); // Triangular flag emoji
                             }
-                            else if (tile.getText() == "\uD83D\uDEA9") {
+                            else if (tile.getText().equals("\uD83D\uDEA9")) {
                                 tile.setText("");
                             }
                         }
@@ -100,18 +102,23 @@ public class Minesweeper {
     }
 
     void setMines() {
-        mineList = new ArrayList<MineTile>();
+        mineList = new ArrayList<>();
 
-        mineList.add(board[2][2]);
-        mineList.add(board[2][3]);
-        mineList.add(board[5][6]);
-        mineList.add(board[3][4]);
-        mineList.add(board[1][1]);
+        int mineLeft = mineCount;
+        while (mineLeft > 0) {
+            int r = random.nextInt(numRows); // 0-8
+            int c = random.nextInt(numCols); // 0-8
+
+            MineTile tile = board[r][c];
+            if (!mineList.contains(tile)) {
+                mineList.add(tile);
+                mineLeft -= 1;
+            }
+        }
     }
 
     void revealMines() {
-        for (int i = 0; i < mineList.size(); i++) {
-            MineTile tile = mineList.get(i);
+        for (MineTile tile : mineList) {
             tile.setText("\uD83D\uDCA3"); // Bomb emoji
         }
 
