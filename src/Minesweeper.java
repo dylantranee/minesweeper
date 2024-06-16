@@ -14,7 +14,6 @@ public class Minesweeper {
     JFrame frame = new JFrame("Minesweeper");
     JLabel textLabel = new JLabel();
     JPanel textPanel = new JPanel();
-    JPanel boardPanel = new JPanel();
 
     Minesweeper() {
         frame.setVisible(true);
@@ -32,8 +31,5 @@ public class Minesweeper {
         textPanel.setLayout(new BorderLayout());
         textPanel.add(textLabel);
         frame.add(textPanel, BorderLayout.NORTH);
-
-        boardPanel.setLayout(new GridLayout(numRows, numCols)); // 9x9
-        frame.add(boardPanel);
     }
 }
