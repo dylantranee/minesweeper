@@ -29,6 +29,9 @@ public class Minesweeper {
     MineTile[][] board = new MineTile[numRows][numCols];
     ArrayList<MineTile> mineList;
 
+    int tilesClicked = 0;
+    boolean gameOver = false;
+
     Minesweeper() {
         frame.setSize(boardWidth, boardHeight);
         frame.setLocationRelativeTo(null);
@@ -60,6 +63,9 @@ public class Minesweeper {
                 tile.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
+                        if (gameOver) {
+                            return;
+                        }
                         MineTile tile = (MineTile) e.getSource();
 
                         // Left click
@@ -107,8 +113,10 @@ public class Minesweeper {
         for (int i = 0; i < mineList.size(); i++) {
             MineTile tile = mineList.get(i);
             tile.setText("\uD83D\uDCA3"); // Bomb emoji
-            tile.setEnabled(false);
         }
+
+        gameOver = true;
+        textLabel.setText("Game Over!");
     }
 
     void checkMine(int r, int c) {
@@ -123,6 +131,7 @@ public class Minesweeper {
             return;
         }
         tile.setEnabled(false);
+        tilesClicked += 1;
 
         int minesFound = 0;
 
@@ -160,6 +169,11 @@ public class Minesweeper {
             checkMine(r+1, c-1); // Bottom left
             checkMine(r+1, c);      // Bottom
             checkMine(r+1, c+1); // Bottom right
+        }
+
+        if (tilesClicked == numRows * numCols - mineList.size()) {
+            gameOver = true;
+            textLabel.setText("Congratulations!");
         }
     }
 
