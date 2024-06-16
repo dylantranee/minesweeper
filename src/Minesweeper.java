@@ -68,6 +68,9 @@ public class Minesweeper {
                                 if (mineList.contains(tile)) {
                                     revealMines();
                                 }
+                                else {
+                                    checkMine(tile.r, tile.c);
+                                }
                             }
                         }
                     }
@@ -95,6 +98,45 @@ public class Minesweeper {
         for (int i = 0; i < mineList.size(); i++) {
             MineTile tile = mineList.get(i);
             tile.setText("\uD83D\uDCA3"); // Bomb emoji
+            tile.setEnabled(false);
         }
+    }
+
+    void checkMine(int r, int c) {
+        MineTile tile = board[r][c];
+        tile.setEnabled(false);
+
+        int minesFound = 0;
+
+        // Check 3 top tiles
+        minesFound += countMine(r-1, c-1); // Top left
+        minesFound += countMine(r-1, c);      // Top
+        minesFound += countMine(r-1, c+1); // Top right
+
+        // Check left and right tiles
+        minesFound += countMine(r, c-1); // Left
+        minesFound += countMine(r, c+1); // Right
+
+        // Check 3 bottom tiles
+        minesFound += countMine(r+1, c-1); // Bottom left
+        minesFound += countMine(r+1, c);      // Bottom
+        minesFound += countMine(r+1, c+1); // Bottom right
+
+        if (minesFound > 0) {
+            tile.setText(Integer.toString(minesFound));
+        }
+        else {
+            tile.setText("");
+        }
+    }
+
+    int countMine(int r, int c) {
+        if (r < 0 || r >= numRows || c < 0 || c >= numCols) {
+            return 0;
+        }
+        if (mineList.contains(board[r][c])) {
+            return 1;
+        }
+        return 0;
     }
 }
