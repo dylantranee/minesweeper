@@ -103,7 +103,16 @@ public class Minesweeper {
     }
 
     void checkMine(int r, int c) {
+        // Base case: When the tile is out of bounds
+        if (r < 0 || r >= numRows || c < 0 || c >= numCols) {
+            return;
+        }
+
         MineTile tile = board[r][c];
+        // Base case: When the tile has already been clicked on
+        if (!tile.isEnabled()) {
+            return;
+        }
         tile.setEnabled(false);
 
         int minesFound = 0;
@@ -127,6 +136,21 @@ public class Minesweeper {
         }
         else {
             tile.setText("");
+
+            // Recursively check 8 surrounding tiles
+            // Check 3 top tiles
+            checkMine(r-1, c-1); // Top left
+            checkMine(r-1, c);      // Top
+            checkMine(r-1, c+1); // Top right
+
+            // Check left and right tiles
+            checkMine(r, c-1);  // Left
+            checkMine(r, c+1);  // Right
+
+            // Check 3 bottom tiles
+            checkMine(r+1, c-1); // Bottom left
+            checkMine(r+1, c);      // Bottom
+            checkMine(r+1, c+1); // Bottom right
         }
     }
 
