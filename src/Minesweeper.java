@@ -73,6 +73,15 @@ public class Minesweeper {
                                 }
                             }
                         }
+                        // Right click
+                        else if (e.getButton() == MouseEvent.BUTTON3) {
+                            if (tile.getText() == "" && tile.isEnabled()) {
+                                tile.setText("\uD83D\uDEA9"); // Triangular flag emoji
+                            }
+                            else if (tile.getText() == "\uD83D\uDEA9") {
+                                tile.setText("");
+                            }
+                        }
                     }
                 });
                 boardPanel.add(tile);
