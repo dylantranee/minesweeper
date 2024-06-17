@@ -146,21 +146,7 @@ public final class Minesweeper {
         tile.setEnabled(false);
         tilesClicked += 1;
 
-        int minesFound = 0;
-
-        // Check 3 top tiles
-        minesFound += countMine(r-1, c-1); // Top left
-        minesFound += countMine(r-1, c);      // Top
-        minesFound += countMine(r-1, c+1); // Top right
-
-        // Check left and right tiles
-        minesFound += countMine(r, c-1); // Left
-        minesFound += countMine(r, c+1); // Right
-
-        // Check 3 bottom tiles
-        minesFound += countMine(r+1, c-1); // Bottom left
-        minesFound += countMine(r+1, c);      // Bottom
-        minesFound += countMine(r+1, c+1); // Bottom right
+        int minesFound = getMinesFound(r, c);
 
         if (minesFound > 0) {
             tile.setText(Integer.toString(minesFound));
@@ -188,6 +174,25 @@ public final class Minesweeper {
             gameOver = true;
             textLabel.setText("Congratulations!");
         }
+    }
+
+    private int getMinesFound(int r, int c) {
+        int minesFound = 0;
+
+        // Check 3 top tiles
+        minesFound += countMine(r -1, c -1); // Top left
+        minesFound += countMine(r -1, c);      // Top
+        minesFound += countMine(r -1, c +1); // Top right
+
+        // Check left and right tiles
+        minesFound += countMine(r, c -1); // Left
+        minesFound += countMine(r, c +1); // Right
+
+        // Check 3 bottom tiles
+        minesFound += countMine(r +1, c -1); // Bottom left
+        minesFound += countMine(r +1, c);      // Bottom
+        minesFound += countMine(r +1, c +1); // Bottom right
+        return minesFound;
     }
 
     int countMine(int r, int c) {
