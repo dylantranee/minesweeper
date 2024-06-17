@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.*;
 
-public class Minesweeper {
+public final class Minesweeper {
+    private static final Minesweeper minesweeper = new Minesweeper();
+
     private static class MineTile extends JButton {
         int r;
         int c;
@@ -34,7 +36,7 @@ public class Minesweeper {
     int tilesClicked = 0;
     boolean gameOver = false;
 
-    Minesweeper() {
+    private Minesweeper() {
         frame.setSize(boardWidth, boardHeight);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
@@ -99,6 +101,10 @@ public class Minesweeper {
         frame.setVisible(true);
 
         setMines();
+    }
+
+    public static Minesweeper getInstance() {
+        return minesweeper;
     }
 
     void setMines() {
