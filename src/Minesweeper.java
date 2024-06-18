@@ -7,7 +7,7 @@ import javax.swing.*;
 public final class Minesweeper {
     private static final Minesweeper minesweeper = new Minesweeper();
 
-    public static class MineTile extends JButton {
+    private static class MineTile extends JButton {
         int r;
         int c;
 
@@ -63,6 +63,7 @@ public final class Minesweeper {
                 tile.setFocusable(false);
                 tile.setMargin(new Insets(0, 0, 0, 0));
                 tile.setFont(new Font("Open Sans Unicode MS", Font.PLAIN, 24));
+//                tile.setText("1");
                 tile.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
@@ -70,19 +71,27 @@ public final class Minesweeper {
                             return;
                         }
                         MineTile tile = (MineTile) e.getSource();
-                        Command command;
 
                         // Left click
                         if (e.getButton() == MouseEvent.BUTTON1) {
-                            command = new RevealTileCommand(minesweeper, tile);
+                            if (tile.getText().isEmpty()) {
+                                if (mineList.contains(tile)) {
+                                    revealMines();
+                                }
+                                else {
+                                    checkMine(tile.r, tile.c);
+                                }
+                            }
                         }
                         // Right click
                         else if (e.getButton() == MouseEvent.BUTTON3) {
-                            command = new FlagTileCommand(tile);
-                        } else {
-                            return;
+                            if (tile.getText().isEmpty() && tile.isEnabled()) {
+                                tile.setText("\uD83D\uDEA9"); // Triangular flag emoji
+                            }
+                            else if (tile.getText().equals("\uD83D\uDEA9")) {
+                                tile.setText("");
+                            }
                         }
-                        command.execute();
                     }
                 });
                 boardPanel.add(tile);
@@ -90,6 +99,7 @@ public final class Minesweeper {
         }
 
         frame.setVisible(true);
+
         setMines();
     }
 
@@ -136,7 +146,21 @@ public final class Minesweeper {
         tile.setEnabled(false);
         tilesClicked += 1;
 
-        int minesFound = getMinesFound(r, c);
+        int minesFound = 0;
+
+        // Check 3 top tiles
+        minesFound += countMine(r-1, c-1); // Top left
+        minesFound += countMine(r-1, c);      // Top
+        minesFound += countMine(r-1, c+1); // Top right
+
+        // Check left and right tiles
+        minesFound += countMine(r, c-1); // Left
+        minesFound += countMine(r, c+1); // Right
+
+        // Check 3 bottom tiles
+        minesFound += countMine(r+1, c-1); // Bottom left
+        minesFound += countMine(r+1, c);      // Bottom
+        minesFound += countMine(r+1, c+1); // Bottom right
 
         if (minesFound > 0) {
             tile.setText(Integer.toString(minesFound));
@@ -164,35 +188,6 @@ public final class Minesweeper {
             gameOver = true;
             textLabel.setText("Congratulations!");
         }
-    }
-
-    void revealTile(MineTile tile) {
-        if (tile.getText().isEmpty()) {
-            if (mineList.contains(tile)) {
-                revealMines();
-            } else {
-                checkMine(tile.r, tile.c);
-            }
-        }
-    }
-
-    private int getMinesFound(int r, int c) {
-        int minesFound = 0;
-
-        // Check 3 top tiles
-        minesFound += countMine(r -1, c -1); // Top left
-        minesFound += countMine(r -1, c);      // Top
-        minesFound += countMine(r -1, c +1); // Top right
-
-        // Check left and right tiles
-        minesFound += countMine(r, c -1); // Left
-        minesFound += countMine(r, c +1); // Right
-
-        // Check 3 bottom tiles
-        minesFound += countMine(r +1, c -1); // Bottom left
-        minesFound += countMine(r +1, c);      // Bottom
-        minesFound += countMine(r +1, c +1); // Bottom right
-        return minesFound;
     }
 
     int countMine(int r, int c) {
