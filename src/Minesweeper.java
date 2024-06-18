@@ -7,7 +7,7 @@ import javax.swing.*;
 public final class Minesweeper {
     private static final Minesweeper minesweeper = new Minesweeper();
 
-    private static class MineTile extends JButton {
+    public static class MineTile extends JButton {
         int r;
         int c;
 
@@ -63,7 +63,6 @@ public final class Minesweeper {
                 tile.setFocusable(false);
                 tile.setMargin(new Insets(0, 0, 0, 0));
                 tile.setFont(new Font("Open Sans Unicode MS", Font.PLAIN, 24));
-//                tile.setText("1");
                 tile.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
@@ -71,27 +70,19 @@ public final class Minesweeper {
                             return;
                         }
                         MineTile tile = (MineTile) e.getSource();
+                        Command command;
 
                         // Left click
                         if (e.getButton() == MouseEvent.BUTTON1) {
-                            if (tile.getText().isEmpty()) {
-                                if (mineList.contains(tile)) {
-                                    revealMines();
-                                }
-                                else {
-                                    checkMine(tile.r, tile.c);
-                                }
-                            }
+                            command = new RevealTileCommand(minesweeper, tile);
                         }
                         // Right click
                         else if (e.getButton() == MouseEvent.BUTTON3) {
-                            if (tile.getText().isEmpty() && tile.isEnabled()) {
-                                tile.setText("\uD83D\uDEA9"); // Triangular flag emoji
-                            }
-                            else if (tile.getText().equals("\uD83D\uDEA9")) {
-                                tile.setText("");
-                            }
+                            command = new FlagTileCommand(tile);
+                        } else {
+                            return;
                         }
+                        command.execute();
                     }
                 });
                 boardPanel.add(tile);
@@ -99,7 +90,6 @@ public final class Minesweeper {
         }
 
         frame.setVisible(true);
-
         setMines();
     }
 
@@ -173,6 +163,16 @@ public final class Minesweeper {
         if (tilesClicked == numRows * numCols - mineList.size()) {
             gameOver = true;
             textLabel.setText("Congratulations!");
+        }
+    }
+
+    void revealTile(MineTile tile) {
+        if (tile.getText().isEmpty()) {
+            if (mineList.contains(tile)) {
+                revealMines();
+            } else {
+                checkMine(tile.r, tile.c);
+            }
         }
     }
 
