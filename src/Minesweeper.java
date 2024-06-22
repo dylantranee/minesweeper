@@ -1,3 +1,10 @@
+/* Name: Trần Anh Văn
+   Student ID: ITITSB22017
+   Purpose: The main class that handles the Minesweeper game logic. It sets up the game board, manages the placement of
+            mines, and handles user interactions such as revealing tiles and flagging potential mines. This class is
+            implemented as a Singleton to ensure only one instance of the game exists.
+*/
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -45,7 +52,7 @@ public final class Minesweeper {
 
         textLabel.setFont(new Font("Open Sans", Font.BOLD, 15));
         textLabel.setHorizontalAlignment(JLabel.CENTER);
-        textLabel.setText("Minesweeper");
+        textLabel.setText("Mines: " + mineCount);
         textLabel.setOpaque(true);
 
         textPanel.setLayout(new BorderLayout());
@@ -63,7 +70,6 @@ public final class Minesweeper {
                 tile.setFocusable(false);
                 tile.setMargin(new Insets(0, 0, 0, 0));
                 tile.setFont(new Font("Open Sans Unicode MS", Font.PLAIN, 24));
-//                tile.setText("1");
                 tile.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {

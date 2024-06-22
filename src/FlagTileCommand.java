@@ -1,3 +1,9 @@
+/* Name: Trần Anh Văn
+   Student ID: ITITSB22017
+   Purpose:  Implements the Command interface to provide the functionality for flagging and unflagging a mine tile.
+             When executed, it toggles a flag on the specified tile.
+*/
+
 public class FlagTileCommand implements Command {
     private final Minesweeper.MineTile tile;
 
